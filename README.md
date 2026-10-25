@@ -1,6 +1,6 @@
-# acalma.com.br — Landing Page de Venda de Domínio Premium
+# acalmo.com.br — Landing Page de Venda de Domínio Premium
 
-Página de alta conversão e presença de marca para o domínio **acalma.com.br**, sob custódia e gestão da **YuryLabs** (Laboratório de Engenharia de Software, Design, Automação e IA).
+Página de alta conversão e presença de marca para o domínio **acalmo.com.br**, sob custódia e gestão da **YuryLabs** (Laboratório de Engenharia de Software, Design, Automação e IA).
 
 ---
 
@@ -16,8 +16,8 @@ Start-Process .\index.html
 
 ### Opção 1: Cloudflare Pages (Mais recomendado para domínios)
 1. Crie uma conta gratuita em [Cloudflare Pages](https://pages.cloudflare.com/).
-2. Arraste e solte a pasta deste projeto (`Site acalma.com.br`).
-3. Adicione o domínio personalizado `acalma.com.br` nas configurações de Domínio Personalizado.
+2. Arraste e solte a pasta deste projeto (`Site acalmo.com.br`).
+3. Adicione o domínio personalizado `acalmo.com.br` nas configurações de Domínio Personalizado.
 4. O Cloudflare gera certificado SSL (HTTPS) automático e gratuito.
 
 ### Opção 2: Vercel / Netlify
@@ -26,7 +26,7 @@ Start-Process .\index.html
 
 ### Opção 3: Hospedagem com cPanel existente
 Se a **YuryLabs** já possui hospedagem cPanel:
-1. Crie um *Domínio Adicional* ou *Alias* para `acalma.com.br`.
+1. Crie um *Domínio Adicional* ou *Alias* para `acalmo.com.br`.
 2. Envie o arquivo `index.html` para a pasta raiz correspondente.
 
 ---
