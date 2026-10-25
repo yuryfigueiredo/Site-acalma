@@ -20,10 +20,10 @@
         const params = new URLSearchParams(window.location.search);
         if (params.get('admin') === 'true' || params.get('ignorar') === 'true') {
           localStorage.setItem('ignorar_analytics', 'true');
-          console.log('[Analytics] Modo Proprietário ATIVADO: este dispositivo não enviará estatísticas.');
+          alert('🛡️ Modo Proprietário ATIVADO!\n\nA partir de agora este navegador NÃO enviará dados ao Analytics.');
         } else if (params.get('admin') === 'false') {
           localStorage.removeItem('ignorar_analytics');
-          console.log('[Analytics] Modo Proprietário DESATIVADO.');
+          alert('Modo Proprietário DESATIVADO: suas visitas voltarão a ser contabilizadas.');
         }
 
         // Se NÃO estiver marcado para ignorar, carrega o Analytics normalmente
