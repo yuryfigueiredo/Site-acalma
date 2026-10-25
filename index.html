@@ -13,11 +13,37 @@
   <!-- Favicon SVG moderno -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%230f172a' stroke='%2338bdf8' stroke-width='6'/><path d='M32 58 C 38 42, 62 42, 68 58' stroke='%232dd4bf' stroke-width='7' stroke-linecap='round' fill='none'/><circle cx='50' cy='36' r='5' fill='%2338bdf8'/></svg>">
 
-  <!-- Vercel Web Analytics (Monitoramento de acessos nativo da Vercel) -->
+  <!-- Vercel Web Analytics com Filtro Inteligente de Proprietário -->
   <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    (function() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('admin') === 'true' || params.get('ignorar') === 'true') {
+          localStorage.setItem('ignorar_analytics', 'true');
+          console.log('[Analytics] Modo Proprietário ATIVADO: este dispositivo não enviará estatísticas.');
+        } else if (params.get('admin') === 'false') {
+          localStorage.removeItem('ignorar_analytics');
+          console.log('[Analytics] Modo Proprietário DESATIVADO.');
+        }
+
+        // Se NÃO estiver marcado para ignorar, carrega o Analytics normalmente
+        if (localStorage.getItem('ignorar_analytics') !== 'true') {
+          window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+          const s = document.createElement('script');
+          s.defer = true;
+          s.src = '/_vercel/insights/script.js';
+          document.head.appendChild(s);
+        }
+      } catch (e) {
+        // Fallback seguro caso localStorage esteja desativado
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+        const s = document.createElement('script');
+        s.defer = true;
+        s.src = '/_vercel/insights/script.js';
+        document.head.appendChild(s);
+      }
+    })();
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
