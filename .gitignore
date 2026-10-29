@@ -1,0 +1,15 @@
+.openai/*.tar
+.openai/*.tar.gz
+.openai/*.zip
+node_modules/
+.vercel/
+dist/
+.DS_Store
+*.log
+screenshots/
+.env
+.env.local
+.env.*.local
+content/briefs/
+content/drafts/
+content/reports/

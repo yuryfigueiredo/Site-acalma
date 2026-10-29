@@ -1,0 +1,146 @@
+[
+  {
+    "id": "encerrar-expediente",
+    "topic": "Um pequeno encerramento para o dia de trabalho",
+    "angle": "Criar uma transição com três decisões visíveis: o que fechar, onde anotar a pendência e qual será a primeira ação fora do trabalho. Adaptar para quem trabalha em casa e não tem um cômodo separado.",
+    "category": "Rituais",
+    "relatedExperience": "guide",
+    "sourceIds": []
+  },
+  {
+    "id": "intervalo-reunioes",
+    "topic": "Uma pausa entre duas reuniões",
+    "angle": "Organizar um intervalo curto quando a próxima chamada já está marcada. Dar alternativas para 30 segundos, um minuto e três minutos, sem prometer mudar o estado emocional ou o desempenho.",
+    "category": "Pausas",
+    "relatedExperience": "breathing",
+    "sourceIds": []
+  },
+  {
+    "id": "contagem-confortavel",
+    "topic": "Como acompanhar a respiração sem perseguir a contagem",
+    "angle": "Usar a orientação fornecida do NHS sobre respiração gentil e confortável para explicar que a contagem é um apoio adaptável. Distinguir a pausa introdutória do site da duração de prática descrita na fonte e não acrescentar retenção obrigatória.",
+    "category": "Respiração",
+    "relatedExperience": "breathing",
+    "sourceIds": ["nhs-breathing"]
+  },
+  {
+    "id": "canto-noturno",
+    "topic": "Preparar um canto tranquilo sem comprar nada",
+    "angle": "Reorganizar objetos que a pessoa já tem: superfície disponível, iluminação escolhida e o que deixar ao alcance. Mostrar uma opção para quarto compartilhado e outra para um espaço pequeno, sem promessas sobre sono.",
+    "category": "Ambientes",
+    "relatedExperience": "guide",
+    "sourceIds": []
+  },
+  {
+    "id": "som-leitura",
+    "topic": "Escolher um ambiente sonoro para a leitura",
+    "angle": "Apresentar critérios de preferência pessoal para testar uma mistura de sons: presença de voz, repetição, volume e silêncio como alternativa. Não afirmar que um som melhora concentração, memória ou produtividade.",
+    "category": "Ambientes",
+    "relatedExperience": "sounds",
+    "sourceIds": []
+  },
+  {
+    "id": "pendencia-papel",
+    "topic": "Onde deixar uma pendência quando o dia termina",
+    "angle": "Propor uma anotação curta que separa o que ficou aberto, o que pode esperar e um próximo passo observável. Diferenciar registrar uma tarefa de tentar resolver tudo na mesma página, sem alegações terapêuticas.",
+    "category": "Escrita",
+    "relatedExperience": "journal",
+    "sourceIds": []
+  },
+  {
+    "id": "bloco-foco-realista",
+    "topic": "Escolher um bloco de foco que caiba na tarefa",
+    "angle": "Partir de uma tarefa concreta e de seus limites para escolher o temporizador. Explicar quando um bloco curto basta e quando convém dividir uma tarefa longa, sem tratar 25 ou 50 minutos como durações cientificamente ideais.",
+    "category": "Foco",
+    "relatedExperience": "focus",
+    "sourceIds": []
+  },
+  {
+    "id": "um-minuto-sem-preparo",
+    "topic": "Uma pausa que não exige preparar o ambiente",
+    "angle": "Descrever opções discretas para uma cadeira de escritório, uma sala movimentada e a própria mesa de casa. A pausa não depende de silêncio perfeito, roupa especial ou objetos; não atribuir efeitos clínicos à prática.",
+    "category": "Pausas",
+    "relatedExperience": "breathing",
+    "sourceIds": []
+  },
+  {
+    "id": "sons-espaco-compartilhado",
+    "topic": "Usar sons em um espaço compartilhado",
+    "angle": "Tratar os combinados com outras pessoas, a opção de fones, a escolha de um volume confortável e a possibilidade de ficar sem áudio. Não prescrever níveis de decibéis ou apresentar orientação de saúde auditiva sem fonte.",
+    "category": "Ambientes",
+    "relatedExperience": "sounds",
+    "sourceIds": []
+  },
+  {
+    "id": "celular-na-transicao",
+    "topic": "Decidir o lugar do celular numa pequena pausa",
+    "angle": "Oferecer três arranjos possíveis para quem precisa permanecer acessível: tela virada, um aplicativo aberto ou aparelho ao alcance. Evitar proibir telas, moralizar o uso ou prometer um detox com efeitos comprovados.",
+    "category": "Rituais",
+    "relatedExperience": "guide",
+    "sourceIds": []
+  },
+  {
+    "id": "retomar-sem-sequencia",
+    "topic": "Retomar um ritual depois de alguns dias sem usá-lo",
+    "angle": "Mostrar como voltar a uma escolha favorita sem tentar compensar dias ou reconstruir uma sequência. Tornar o retorno concreto com uma versão pequena e uma opção de encerrar, sem discurso motivacional genérico.",
+    "category": "Rituais",
+    "relatedExperience": "guide",
+    "sourceIds": []
+  },
+  {
+    "id": "apos-almoco",
+    "topic": "Criar uma transição depois do almoço",
+    "angle": "Organizar os primeiros minutos de volta à mesa: decidir o que começa agora, retirar uma distração e escolher um intervalo. Não explicar digestão, energia, fadiga ou ritmos biológicos sem evidências.",
+    "category": "Foco",
+    "relatedExperience": "focus",
+    "sourceIds": []
+  },
+  {
+    "id": "postura-para-respirar",
+    "topic": "Encontrar uma posição confortável para uma pausa de respiração",
+    "angle": "Usar somente as posições e orientações de conforto presentes no material do NHS. Adaptar a explicação para quem está sentado e pode apoiar os pés, sem corrigir corpos, impor uma postura perfeita ou prometer tratar sintomas.",
+    "category": "Respiração",
+    "relatedExperience": "breathing",
+    "sourceIds": ["nhs-breathing"]
+  },
+  {
+    "id": "domingo-sem-lista",
+    "topic": "Deixar um espaço livre no fim de semana",
+    "angle": "Distinguir uma pequena escolha de descanso de mais uma lista a cumprir. Dar exemplos para quem tem tarefas domésticas, cuidados com outras pessoas e pouco tempo livre, sem idealizar uma rotina de lazer inacessível.",
+    "category": "Pausas",
+    "relatedExperience": "guide",
+    "sourceIds": []
+  },
+  {
+    "id": "quando-nao-ha-o-que-escrever",
+    "topic": "Começar uma anotação quando não há uma ideia pronta",
+    "angle": "Oferecer entradas concretas: descrever um objeto da mesa, registrar uma tarefa que terminou ou anotar algo que pode esperar. Permitir deixar a página vazia. Não prometer que escrever revela sentimentos ou produz autoconhecimento.",
+    "category": "Escrita",
+    "relatedExperience": "journal",
+    "sourceIds": []
+  },
+  {
+    "id": "silencio-com-ruidos",
+    "topic": "Fazer uma pausa mesmo quando a casa não está silenciosa",
+    "angle": "Apresentar uma pausa sem adicionar áudio, convivendo com ruídos cotidianos que não podem ser controlados. Mostrar escolhas pequenas de lugar e duração sem sugerir que a pessoa precisa tolerar situações desconfortáveis ou perigosas.",
+    "category": "Ambientes",
+    "relatedExperience": "sounds",
+    "sourceIds": []
+  },
+  {
+    "id": "escolher-um-ritual",
+    "topic": "Escolher um ritual entre várias possibilidades",
+    "angle": "Usar tempo disponível, lugar e preferência por som, escrita ou silêncio como critérios. Ajudar a escolher uma única experiência sem apresentar perfis de personalidade ou estados emocionais como diagnósticos.",
+    "category": "Rituais",
+    "relatedExperience": "guide",
+    "sourceIds": []
+  },
+  {
+    "id": "som-com-hora-de-terminar",
+    "topic": "Dar uma duração ao som que acompanha a noite",
+    "angle": "Explicar como escolher e ajustar um temporizador conforme a rotina, com início por ação da pessoa e possibilidade de parar antes. Não afirmar que o áudio trata insônia ou que continuará ativo em todo aparelho com a tela bloqueada.",
+    "category": "Ambientes",
+    "relatedExperience": "sounds",
+    "sourceIds": []
+  }
+]

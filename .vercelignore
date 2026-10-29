@@ -1,0 +1,11 @@
+.env*
+.git
+.openai
+.codegraph
+screenshots
+*.log
+content/briefs
+content/drafts
+content/reports
+docs
+tests

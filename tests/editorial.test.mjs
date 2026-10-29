@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {parseJsonAnswer,validateArticle,validateReview,renderArticle,countWords} from '../scripts/editorial-utils.mjs';
+const paragraph='Escolha uma tarefa pequena para este momento e deixe o restante anotado. Você pode fechar uma janela que não usa, apoiar as mãos e observar o espaço ao redor. Quando quiser continuar, retome uma ação concreta sem exigir que a pausa tenha mudado tudo. Um intervalo simples também pode caber numa sala compartilhada e ser interrompido quando outra pessoa precisar de você.';
+const article={slug:'um-intervalo-possivel',title:'Um intervalo que cabe entre tarefas',description:'Uma proposta simples para marcar a transição entre atividades e escolher o próximo passo sem transformar uma pausa em outra obrigação.',category:'Rotina',lead:paragraph,sections:[{heading:'Comece com o que existe',paragraphs:[paragraph,paragraph]},{heading:'Deixe espaço para mudar',paragraphs:[paragraph,paragraph]},{heading:'Retome uma coisa pequena',paragraphs:[paragraph,paragraph]}],closing:paragraph,sourceIds:[],relatedExperience:'guide'};
+assert.ok(countWords([article.lead,...article.sections.flatMap(s=>s.paragraphs),article.closing].join(' '))>=450);
+assert.deepEqual(validateArticle(article),[]);
+assert.deepEqual(parseJsonAnswer('```json\n'+JSON.stringify(article)+'\n```'),article);
+assert.throws(()=>parseJsonAnswer('Texto fora do JSON '+JSON.stringify(article)),/JSON válido/);
+assert.ok(validateArticle({...article,sections:[null]}).length,'Malformed fallback must fail without crashing');
+assert.ok(validateArticle({...article,lead:'<script>alert(1)</script>'+paragraph}).length,'Model HTML must be rejected');
+assert.ok(validateArticle({...article,sourceIds:['inventada']}).length,'Invented citations must be rejected');
+assert.ok(validateArticle({...article,title:article.title},{recentTitles:[article.title]}).length,'Duplicate titles must be rejected');
+assert.equal(validateReview({approved:true,issues:['Fonte insuficiente'],strengths:[]}),false);
+assert.equal(validateReview({approved:true,issues:[],strengths:[],publishNow:true}),false);
+assert.equal(validateReview({approved:true,issues:[],strengths:['Exemplo concreto']}),true);
+assert.ok(!renderArticle({...article,title:'<script>'},[]).includes('<script>'));
+assert.ok(renderArticle(article,[]).includes('Ler o guia gratuito'));
+console.log('Editorial: fallback malformado, HTML, fontes inventadas, títulos repetidos e parecer contraditório bloqueados.');

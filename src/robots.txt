@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://acalmo.com.br/sitemap.xml
