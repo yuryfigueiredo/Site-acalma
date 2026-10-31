@@ -62,7 +62,7 @@
 
 /* Alvo de toque medido no aparelho: 44px vale também para o menu e para a marca no cabeçalho. */
 .menu-button{width:44px;height:44px}
-.site-header .wordmark{display:inline-grid;place-items:center;min-height:44px}
+.site-header .wordmark{line-height:46px}
 
 /* As migalhas ficam no polegar: o texto continua pequeno, o alvo chega a 44px. */
 .breadcrumbs a{padding:14px 8px;margin-inline:-8px}
