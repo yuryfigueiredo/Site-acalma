@@ -6,6 +6,8 @@ Experiências de pausa, respiração guiada, paisagens sonoras, escrita local e 
 
 As fontes ficam em `src/`. Execute `npm run build` para gerar `dist/`, `npm run check` para verificar as páginas e `npm test` para testar as ferramentas.
 
+Para medir em vez de supor: `node scripts/shoot.mjs <url> --out <png> --width 390 --height 844 --touch` captura com o Chrome local (o `--touch` é o que faz o site entrar no modo de toque), e `node scripts/tap-targets.mjs <url> --width 390` lista todo alvo de toque menor que 44px.
+
 ## Publicação
 
 O projeto Vercel `yury11/site-acalmo` usa a branch `main` deste repositório. O arquivo `vercel.json` configura a construção e publica somente `dist/`.

@@ -55,6 +55,8 @@
 .related-item h2{margin:0;font-size:21px;line-height:1.35}
 .related-item:hover,.related-item:focus-visible{border-color:var(--green)}
 @media(max-width:580px){.related-grid{grid-template-columns:1fr}.related-item{padding:18px}.related-item h2{font-size:19px}}
+/* Na 404 são três convites em uma coluna de leitura: o terceiro fecha a linha em vez de ficar órfão. */
+.related-grid--three .related-item:last-child{grid-column:1/-1}
 
 /* O card de leitura vizinha é um alvo, não um link de corpo de texto: sem sublinhado até a pessoa passar por ele. */
 .article-content a.related-item{text-decoration:none}
