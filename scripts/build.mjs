@@ -1,9 +1,11 @@
-import { cp, mkdir, readFile, writeFile, readdir } from 'node:fs/promises';
+import { cp, mkdir, readFile, writeFile, readdir, rm } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 await import('./content.mjs');
+// Um dist/ acumulado publicaria para sempre o arquivo que saiu do src/ — e o service worker o guardaria junto.
+await rm(path.join(root, 'dist'), { recursive: true, force: true });
 await mkdir(path.join(root, 'dist'), { recursive: true });
 await cp(path.join(root, 'src'), path.join(root, 'dist'), { recursive: true });
 const files = [];

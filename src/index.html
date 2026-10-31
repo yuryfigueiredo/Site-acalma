@@ -13,13 +13,16 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:url" content="https://www.acalmo.com.br/">
-  <meta property="og:image" content="https://www.acalmo.com.br/assets/lagoon.png">
+  <meta property="og:image" content="https://www.acalmo.com.br/assets/og-cover.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Lagoa tranquila entre bancos de areia sob a luz da manhã.">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://www.acalmo.com.br/assets/og-cover.jpg">
   <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/assets/icon-192.png">
   <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="preload" href="/assets/lagoon.png" as="image" fetchpriority="high">
+  <link rel="preload" as="image" fetchpriority="high" imagesizes="100vw" imagesrcset="/assets/lagoon-768.avif 768w, /assets/lagoon-1536.avif 1536w">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="stylesheet" href="/assets/refinements.css">
   <script>try{const t=localStorage.getItem('acalmo:theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.dataset.theme='dark';}catch{}</script>
@@ -35,7 +38,7 @@
   <main id="principal">
     <section class="hero wrap" aria-labelledby="hero-title">
       <div class="hero-surface" id="hero-surface">
-        <img class="hero-image" src="/assets/lagoon.png" alt="Uma lagoa entre dunas de areia clara, banhada por uma luz suave." width="1536" height="1024" fetchpriority="high">
+        <picture><source type="image/avif" srcset="/assets/lagoon-768.avif 768w, /assets/lagoon-1536.avif 1536w" sizes="100vw"><img class="hero-image" src="/assets/lagoon-1536.webp" alt="Uma lagoa entre dunas de areia clara, banhada por uma luz suave." width="1536" height="1024" fetchpriority="high"></picture>
         <canvas id="hero-water" aria-hidden="true"></canvas>
         <div class="hero-shade"></div>
         <div class="hero-content"><p class="hero-intro"><span class="small-orbit" aria-hidden="true"></span>Um lugar para desacelerar</p><h1 id="hero-title">O mundo pode<br>esperar um pouco.</h1><p>Uma respiração. Um som. Um instante seu.<br>Encontre um pouco de calma, no seu tempo.</p><button class="button primary" data-breathe="cycles5">Começar minha pausa <span data-icon="arrow" aria-hidden="true"></span></button><span class="hero-caption">50 segundos para estar aqui. Sem cadastro.</span></div>

@@ -101,6 +101,11 @@ try {
   await send('Emulation.setEmulatedMedia', {
     features: [{ name: 'prefers-color-scheme', value: arg('scheme', 'light') }],
   });
+  // sem isto o Chrome headless reporta (pointer:fine) mesmo com mobile:true e o site mostra "Mova o mouse".
+  if (process.argv.includes('--touch')) {
+    await send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
+    await send('Emulation.setEmitTouchEventsForMouse', { enabled: true, configuration: 'mobile' });
+  }
 
   await send('Page.navigate', { url });
   await send('Page.frameStoppedLoading').catch(() => {});
