@@ -51,7 +51,7 @@ $$('dialog').forEach(dialog => {
 
 // Theme choice is local; no server-side profile is needed.
 const themeButton = $('#theme-toggle');
-function renderTheme() { const dark = document.documentElement.dataset.theme === 'dark'; themeButton.setAttribute('aria-pressed', String(dark)); themeButton.setAttribute('aria-label', dark ? 'Ativar modo claro' : 'Ativar modo noturno'); themeButton.innerHTML = icon(dark ? 'sun' : 'moon'); $('meta[name="theme-color"]').content = dark ? '#172a24' : '#eeeade'; }
+function renderTheme() { const dark = document.documentElement.dataset.theme === 'dark'; themeButton.setAttribute('aria-pressed', String(dark)); themeButton.setAttribute('aria-label', dark ? 'Ativar modo claro' : 'Ativar modo noturno'); themeButton.innerHTML = icon(dark ? 'sun' : 'moon'); $('meta[name="theme-color"]').content = dark ? '#172a24' : '#f5f2e9'; }
 themeButton.addEventListener('click', () => { const dark = document.documentElement.dataset.theme !== 'dark'; document.documentElement.dataset.theme = dark ? 'dark' : 'light'; try { local?.setItem('acalmo:theme', dark ? 'dark' : 'light'); } catch { /* Theme still works for this visit. */ } renderTheme(); });
 renderTheme();
 $('#year').textContent = new Date().getFullYear();
@@ -176,11 +176,20 @@ async function startDefaultSea(gesture=false){
   }catch{ /* The visible sound control remains available after a blocked attempt. */ }
   finally{defaultSeaBusy=false;renderAudio();}
 }
-document.addEventListener('pointerdown',event=>{if(event.isTrusted&&!event.target.closest('.sound-toggle,[data-volume],#hero-audio,#audio-pause,#audio-stop,#sound-timer'))startDefaultSea(true);},{capture:true});
-document.addEventListener('keydown',event=>{if(event.isTrusted&&['Enter',' '].includes(event.key)&&!event.target.closest('button,input,textarea,select'))startDefaultSea(true);},{capture:true});
+// Uma única tentativa de liberar o áudio na primeira interação livre; tocar em um controle é escolha de outra coisa.
+function unlockDefaultSea(event){
+  if(!event.isTrusted)return;
+  if(event.type==='keydown'&&!['Enter',' '].includes(event.key))return;
+  document.removeEventListener('pointerdown',unlockDefaultSea,true);
+  document.removeEventListener('keydown',unlockDefaultSea,true);
+  if(event.target.closest('a,button,input,select,textarea,summary,label'))return;
+  startDefaultSea(true);
+}
+document.addEventListener('pointerdown',unlockDefaultSea,{capture:true});
+document.addEventListener('keydown',unlockDefaultSea,{capture:true});
 renderAudio();
 startDefaultSea();
-$('[data-intent="silence"]').addEventListener('click',()=>stopSounds());
+$('[data-intent="silence"]').addEventListener('click',()=>{stopSounds().catch(()=>{});});
 
 // Journal is ephemeral unless the visitor explicitly saves it to this browser.
 const journalFields = ['#journal-one', '#journal-two', '#journal-three'];
@@ -198,13 +207,15 @@ $('#journal-delete').addEventListener('click', () => { if (!journalFields.some(s
 let focusMode = 'work', focusState = 'idle', focusRemaining = 25 * 60000, focusDeadline = 0;
 const focusStart = $('#focus-start'), focusLength = $('#focus-length');
 function focusDuration() { return Number(focusLength.value) * (focusMode === 'rest' ? .2 : 1) * 60000; }
-function renderFocus() { const text = formatClock(focusRemaining); $('#focus-clock').textContent = text; $('#focus-clock').setAttribute('aria-label', text.replace(':', ' minutos e ') + ' segundos'); $('#focus-phase').textContent = focusMode === 'work' ? 'Momento de concentração' : 'Momento de descanso'; focusLength.disabled = focusState === 'running' || focusState === 'paused'; focusStart.textContent = focusState === 'running' ? 'Pausar' : focusState === 'paused' ? 'Continuar' : focusMode === 'work' ? 'Começar foco' : 'Começar descanso'; if (focusState === 'running') document.title = text + ' · ' + (focusMode === 'work' ? 'Foco' : 'Descanso') + ' · Acalmo'; else document.title = 'Acalmo — um lugar para desacelerar'; }
+function renderFocus() { const text = formatClock(focusRemaining); $('#focus-clock').textContent = text; $('#focus-phase').textContent = focusMode === 'work' ? 'Momento de concentração' : 'Momento de descanso'; focusLength.disabled = focusState === 'running' || focusState === 'paused'; focusStart.textContent = focusState === 'running' ? 'Pausar' : focusState === 'paused' ? 'Continuar' : focusMode === 'work' ? 'Começar foco' : 'Começar descanso'; if (focusState === 'running') document.title = text + ' · ' + (focusMode === 'work' ? 'Foco' : 'Descanso') + ' · Acalmo'; else document.title = 'Acalmo — um lugar para desacelerar'; }
 function tickFocus() { if (focusState !== 'running') return; focusRemaining = Math.max(0, focusDeadline - Date.now()); if (!focusRemaining) { focusState = 'idle'; const wasWork = focusMode === 'work'; focusMode = wasWork ? 'rest' : 'work'; focusRemaining = focusDuration(); const message = wasWork ? 'Seu bloco terminou. Um pouco de descanso também faz parte.' : 'Seu descanso terminou. Continue só se fizer sentido.'; $('#focus-instruction').textContent = message; $('#focus-status').textContent = message; toast(message); } renderFocus(); }
 function openFocus(trigger) { openDialog('focus-dialog', trigger); renderFocus(); }
 $('#focus-open').addEventListener('click', event => openFocus(event.currentTarget));
 focusStart.addEventListener('click', () => { if (focusState === 'running') { focusRemaining = Math.max(0, focusDeadline - Date.now()); focusState = 'paused'; } else { focusDeadline = Date.now() + focusRemaining; focusState = 'running'; } renderFocus(); });
 $('#focus-reset').addEventListener('click', () => { focusMode = 'work'; focusState = 'idle'; focusRemaining = focusDuration(); $('#focus-instruction').textContent = 'Escolha uma tarefa pequena e dê espaço a ela.'; renderFocus(); });
 focusLength.addEventListener('change', () => { focusMode = 'work'; focusRemaining = focusDuration(); renderFocus(); });
+// Fechar o diálogo preserva o bloco em pausa: sem isso o cronômetro seguiria reescrevendo o título da aba.
+$('#focus-dialog').addEventListener('close', () => { if (focusState === 'running') { focusRemaining = Math.max(0, focusDeadline - Date.now()); focusState = 'paused'; } renderFocus(); });
 setInterval(tickFocus, 250);
 
 // Original daily reflection; dates use the visitor's local calendar day.
@@ -254,14 +265,14 @@ renderFavorites(); renderQuoteSave();
 
 // All affiliate links use the owner's supplied StoreID; no prices or reviews are invented.
 const queries = { mask: 'mascara de dormir', notebook: 'caderno sem pauta', lamp: 'luminaria de mesa' };
-$$('[data-affiliate]').forEach(link => { link.href = affiliateUrl(queries[link.dataset.affiliate], config.amazonStoreId); link.target='_self'; });
+$$('[data-affiliate]').forEach(link => { link.href = affiliateUrl(queries[link.dataset.affiliate], config.amazonStoreId); });
 if (config.checkoutUrl) { try { const url = new URL(config.checkoutUrl); if (url.protocol === 'https:') { $('#product-buy').href = url.href; $('#product-buy').hidden = false; } } catch { /* Keep incomplete offers out of the visitor flow. */ } }
 
 // Installation is optional; the PWA has no notification requests.
 let installPrompt;
 window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); installPrompt = event; $('#install-button').hidden = false; });
 $('#install-open').addEventListener('click', event => openDialog('install-dialog', event.currentTarget));
-$('#install-button').addEventListener('click', async () => { if (!installPrompt) return; await installPrompt.prompt(); const choice = await installPrompt.userChoice; if (choice.outcome === 'accepted') $('#install-description').textContent = 'O atalho foi solicitado ao seu navegador. O Acalmo continua disponível por aqui.'; installPrompt = null; $('#install-button').hidden = true; });
+$('#install-button').addEventListener('click', async () => { if (!installPrompt) return; try { await installPrompt.prompt(); const choice = await installPrompt.userChoice; if (choice.outcome === 'accepted') $('#install-description').textContent = 'O atalho foi solicitado ao seu navegador. O Acalmo continua disponível por aqui.'; } catch { /* O navegador pode recusar o convite a qualquer momento. */ } installPrompt = null; $('#install-button').hidden = true; });
 window.addEventListener('appinstalled', () => { $('#install-description').textContent = 'O Acalmo foi instalado. Você pode abrir pela sua tela inicial.'; $('#install-button').hidden = true; });
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => { $('#install-description').textContent += ' O modo offline não está disponível nesta visita.'; });
 window.addEventListener('pagehide', event => { if (event.persisted) { audio.pause().catch(() => {}); audioPaused = true; renderAudio(); } else {audio.destroy().catch(() => {});waterScene.destroy();} cancelAnimationFrame(waterFrame); waterFrame = 0; pauseBreath(); });

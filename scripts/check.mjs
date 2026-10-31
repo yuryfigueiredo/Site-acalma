@@ -15,6 +15,7 @@ for(const file of files){
   if(file.endsWith('.html')){
     pages++;assert.ok(/<html[^>]*lang="pt-BR"/.test(text),file+' precisa de idioma');assert.equal([...text.matchAll(/<h1[ >]/g)].length,1,file+' precisa de um h1');
     const ids=[...text.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);assert.equal(new Set(ids).size,ids.length,file+' tem IDs duplicados');
+    assert.ok(!/\$\{[A-Za-z_]/.test(text),file+' saiu do build com placeholder não interpolado');
     for(const match of text.matchAll(/\b(?:href|src)="(\/[^"#]*)(?:#[^"]*)?"/g)){let target=path.join(root,decodeURIComponent(match[1]).split('?')[0]);try{if((await stat(target)).isDirectory())target=path.join(target,'index.html');await stat(target);}catch{throw new Error(file+' aponta para recurso ausente: '+match[1]);}}
   }
 }
