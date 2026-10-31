@@ -6,10 +6,58 @@ import {validateArticle,renderArticle,escapeHtml} from './editorial-utils.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../src');
 const origin = config.siteOrigin;
 const esc = text => String(text).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;');
-function page({title, description, route, content, category='Pequenas leituras', type='article',publishedAt='2026-10-28'}) {
+const menuIcon = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
+const closeIcon = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg>';
+
+// Abaixo de 800px o .site-header nav é ocultado; sem este diálogo a pessoa fica sem navegação.
+function menuDialog() {
+  return `<dialog class="menu-dialog" id="page-menu-dialog" aria-label="Menu de navegação"><div class="dialog-top"><a href="/" class="wordmark">acalmo.</a><button class="icon-button" data-close="page-menu-dialog" aria-label="Fechar menu">${closeIcon}</button></div><nav class="menu-list" aria-label="Navegação do menu"><a href="/#experiencias">Encontre sua pausa</a><a href="/#sons">Sons</a><a href="/#rituais">Pequenos rituais</a><a href="/guia/">Guia gratuito</a><a href="/blog/">Todas as leituras</a></nav><p class="menu-note">Sem cadastro. Suas escolhas ficam neste navegador.</p></dialog>`;
+}
+
+// Os artigos de /leituras/ não declaram type nem publishedAt; sem este passo eles sairiam do build como WebPage sem data.
+function normalize(entry) {
+  return { category: 'Pequenas leituras', type: 'article', publishedAt: '2026-10-28', ...entry };
+}
+
+function breadcrumbs({ title, type }) {
+  const crumbs = type === 'article'
+    ? [['Acalmo', '/'], ['Leituras', '/blog/'], [title, null]]
+    : [['Acalmo', '/'], [title, null]];
+  const sep = '<span class="crumb-sep" aria-hidden="true">/</span>';
+  return `<nav class="breadcrumbs" aria-label="Você está aqui">${crumbs.map(([name, href], i) => href ? `<a href="${href}">${esc(name)}</a>` : `<span aria-current="page">${esc(name)}</span>`).join(sep)}</nav>`;
+}
+
+// Artigos vizinhos: o /blog/ é o hub e cada leitura precisa voltar para ele e seguir adiante.
+function relatedReadings(route) {
+  const others = readingEntries.filter(entry => entry.route !== route).slice(0, 2);
+  if (others.length < 2) return '';
+  return `<nav class="article-related" aria-label="Outras leituras"><p class="section-kicker">Talvez caiba agora</p><div class="related-grid">${others.map(entry => `<a class="related-item" href="${entry.route}"><span class="small-label">${esc(entry.category || 'Pequenas pausas')}</span><h2>${esc(entry.title)}</h2><span class="text-link">Ler com calma</span></a>`).join('')}</div></nav>`;
+}
+
+// Publisher e WebSite vêm inline: uma página gerada não pode apontar @id para o JSON-LD de /, que ela nunca carrega.
+function structuredData(entry) {
+  const { title, description, route, type, publishedAt } = entry;
   const url = origin + route;
-  const dateLabel=new Intl.DateTimeFormat('pt-BR',{dateStyle:'long',timeZone:'America/Sao_Paulo'}).format(new Date(publishedAt+'T12:00:00-03:00'));
-  return `<!doctype html><html lang="pt-BR" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} — Acalmo</title><meta name="description" content="${esc(description)}"><meta name="robots" content="${config.indexable?'index,follow':'noindex,nofollow'}"><meta name="theme-color" content="#f5f2e9"><link rel="canonical" href="${url}"><meta property="og:title" content="${esc(title)} — Acalmo"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${url}"><meta property="og:type" content="${type}"><meta property="og:locale" content="pt_BR"><meta property="og:image" content="${origin}/assets/lagoon.png"><meta name="twitter:card" content="summary_large_image"><link rel="icon" href="/assets/icon.svg"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/manifest.webmanifest"><link rel="stylesheet" href="/assets/style.css"><link rel="stylesheet" href="/assets/refinements.css"><script>try{const t=localStorage.getItem('acalmo:theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.dataset.theme='dark';}catch{}</script><script type="module" src="/assets/page.js"></script></head><body><a class="skip-link" href="#conteudo">Ir para o conteúdo</a><header class="site-header wrap article-header"><a href="/" class="wordmark" aria-label="Acalmo, início">acalmo.</a><nav aria-label="Navegação principal"><a href="/#experiencias">Encontrar uma pausa</a><a href="/#sons">Sons</a><a href="/guia/">Guia gratuito</a></nav><button id="page-theme" class="text-button" aria-pressed="false">Modo noturno</button></header><main class="article-content" id="conteudo"><a class="small-label" href="/">Voltar ao Acalmo</a><p class="section-kicker" style="margin-top:24px">${esc(category)}</p><h1>${esc(title)}</h1>${type==='article'?`<p class="article-meta">Por Acalmo · Publicado em ${dateLabel}</p>`:''}${content}</main><footer class="site-footer"><div class="wrap footer-top"><div><a href="/" class="wordmark">acalmo.</a><p>Um lugar para desacelerar.</p></div><nav aria-label="Informações"><a href="/sobre/">Sobre o Acalmo</a><a href="/privacidade/">Privacidade e seus dados</a><a href="/guia/">Pequeno manual de pausas</a></nav><p class="footer-note">Conteúdo de bem-estar.<br>Não substitui cuidados profissionais.</p></div></footer></body></html>`;
+  const crumbs = [{ name: 'Acalmo', item: origin + '/' }];
+  if (type === 'article') crumbs.push({ name: 'Leituras', item: origin + '/blog/' });
+  crumbs.push({ name: title, item: url });
+  const publisher = { '@type': 'Organization', '@id': origin + '/#organization', name: 'Acalmo', url: origin + '/', description: 'Um lugar para desacelerar.' };
+  const website = { '@type': 'WebSite', '@id': origin + '/#website', url: origin + '/', name: 'Acalmo', inLanguage: 'pt-BR', publisher };
+  const page = type === 'article'
+    ? { '@type': 'Article', '@id': url + '#article', headline: title, description, inLanguage: 'pt-BR', datePublished: publishedAt, dateModified: publishedAt, author: publisher, publisher, isPartOf: website, mainEntityOfPage: { '@type': 'WebPage', '@id': url + '#webpage', url }, image: origin + '/assets/lagoon.png', breadcrumb: { '@id': url + '#breadcrumb' } }
+    : { '@type': 'WebPage', '@id': url + '#webpage', url, name: `${title} — Acalmo`, description, inLanguage: 'pt-BR', isPartOf: website, publisher, breadcrumb: { '@id': url + '#breadcrumb' } };
+  const graph = [page, website, { '@type': 'BreadcrumbList', '@id': url + '#breadcrumb', itemListElement: crumbs.map((crumb, index) => ({ '@type': 'ListItem', position: index + 1, name: crumb.name, item: crumb.item })) }];
+  return JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replaceAll('<', '\\u003c');
+}
+
+function page(rawEntry) {
+  const entry = normalize(rawEntry);
+  const { title, description, route, content, category, type, publishedAt } = entry;
+  const url = origin + route;
+  const dateLabel = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long', timeZone: 'America/Sao_Paulo' }).format(new Date(publishedAt + 'T12:00:00-03:00'));
+  const meta = `<meta name="theme-color" content="#f5f2e9">`;
+  const body = type === 'article' ? `${content}${relatedReadings(route)}` : content;
+  return `<!doctype html><html lang="pt-BR" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} — Acalmo</title><meta name="description" content="${esc(description)}"><meta name="robots" content="${config.indexable ? 'index,follow' : 'noindex,nofollow'}">${meta}<link rel="canonical" href="${url}"><meta property="og:title" content="${esc(title)} — Acalmo"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${url}"><meta property="og:type" content="${type === 'article' ? 'article' : 'website'}"><meta property="og:locale" content="pt_BR"><meta property="og:image" content="${origin}/assets/lagoon.png"><meta name="twitter:card" content="summary_large_image"><link rel="icon" href="/assets/icon.svg"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/manifest.webmanifest"><link rel="stylesheet" href="/assets/style.css"><link rel="stylesheet" href="/assets/refinements.css"><script>try{const t=localStorage.getItem('acalmo:theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.dataset.theme='dark';}catch{}</script><script type="application/ld+json">${structuredData(entry)}</script><script type="module" src="/assets/page.js"></script></head><body><a class="skip-link" href="#conteudo">Ir para o conteúdo</a><header class="site-header wrap article-header"><a href="/" class="wordmark" aria-label="Acalmo, início">acalmo.</a><nav aria-label="Navegação principal"><a href="/#experiencias">Encontrar uma pausa</a><a href="/#sons">Sons</a><a href="/guia/">Guia gratuito</a></nav><div class="header-actions"><button class="menu-button" id="page-menu" aria-label="Abrir menu de navegação" aria-haspopup="dialog">${menuIcon}</button><button id="page-theme" class="text-button" aria-pressed="false">Modo noturno</button></div></header><main class="article-content" id="conteudo">${breadcrumbs(entry)}<p class="section-kicker" style="margin-top:24px">${esc(category)}</p><h1>${esc(title)}</h1>${type === 'article' ? `<p class="article-meta">Por Acalmo · Publicado em ${dateLabel}</p>` : ''}${body}</main><footer class="site-footer"><div class="wrap footer-top"><div><a href="/" class="wordmark">acalmo.</a><p>Um lugar para desacelerar.</p></div><nav aria-label="Informações"><a href="/blog/">Todas as leituras</a><a href="/guia/">Pequeno manual de pausas</a><a href="/sobre/">Sobre o Acalmo</a><a href="/privacidade/">Privacidade e seus dados</a></nav><p class="footer-note">Conteúdo de bem-estar.<br>Não substitui cuidados profissionais.</p></div></footer>${menuDialog()}</body></html>`;
 }
 const entries = [
   {route:'/leituras/uma-pausa-entre-tarefas/',title:'Uma pausa entre uma tarefa e outra',description:'Um convite simples para marcar a transição entre atividades, respirar com conforto e escolher o próximo passo.',content:`

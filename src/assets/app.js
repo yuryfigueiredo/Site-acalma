@@ -26,7 +26,8 @@ const shapes = {
   share:'<path d="M12 16V3m-5 5 5-5 5 5M5 12H3v9h18v-9h-2"/>',
   download:'<path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/>',
   external:'<path d="M14 3h7v7m0-7L10 14M10 3H3v18h18v-7"/>',
-  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>'
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>',
+  menu:'<path d="M4 7h16M4 12h16M4 17h16"/>'
 };
 function icon(name) { return `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${shapes[name] || shapes.leaf}</svg>`; }
 function renderIcons(parent = document) { $$('[data-icon]', parent).forEach(node => { node.innerHTML = icon(node.dataset.icon); }); }
@@ -48,6 +49,10 @@ $$('dialog').forEach(dialog => {
   dialog.addEventListener('click', event => { if (event.target === dialog) { const r = dialog.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) dialog.close(); } });
   dialog.addEventListener('close', () => { const trigger = triggers.get(dialog); if (trigger?.isConnected) trigger.focus({ preventScroll: true }); });
 });
+
+// Abaixo de 800px a navegação vive neste diálogo; âncoras precisam fechá-lo antes de rolar.
+const menuOpen = $('#menu-open');
+if (menuOpen) { const menuDialog = $('#menu-dialog'); menuOpen.addEventListener('click', event => openDialog('menu-dialog', event.currentTarget)); $$('a', menuDialog).forEach(link => link.addEventListener('click', () => menuDialog.close())); }
 
 // Theme choice is local; no server-side profile is needed.
 const themeButton = $('#theme-toggle');
