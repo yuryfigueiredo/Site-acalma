@@ -67,7 +67,8 @@
 
 /* Alvo de toque medido no aparelho: 44px vale também para o menu e para a marca no cabeçalho. */
 .menu-button{width:44px;height:44px}
-.site-header .wordmark{line-height:46px}
+/* Um <a> inline mede a caixa da fonte, não a linha: com a serif nova isso caiu para 43px. inline-flex mantém "acalmo." em uma linha só e dá altura de alvo. */
+.site-header .wordmark,.site-footer .wordmark{display:inline-flex;align-items:center;min-height:44px}
 
 /* As migalhas ficam no polegar: o texto continua pequeno, o alvo chega a 44px. */
 .breadcrumbs a{padding:14px 8px;margin-inline:-8px}
